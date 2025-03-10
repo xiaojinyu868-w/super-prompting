@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自监督提示优化系统</title>
+    <!-- 添加字体图标库 -->
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1><sup></sup></h1>
+            <p>自监督提示优化系统</p>
+        </div>
+    </header>
+    
+    <main>
+        <!-- 配置视图 -->
+        <div id="config-view" class="view">
+            <div class="config-panel">
+                <h2>配置</h2>
+                
+                <div class="api-config">
+                    <h3>API设置</h3>
+                    <div class="form-group">
+                        <label for="api-key">API Key:</label>
+                        <input type="password" id="api-key" placeholder="输入你的API Key">
+                    </div>
+                    <div class="form-group">
+                        <label for="base-url">Base URL:</label>
+                        <input type="text" id="base-url" placeholder="https://api.endpoint.com" value="https://api.siliconflow.cn">
+                    </div>
+                </div>
+                
+                <div class="model-config">
+                    <h3>模型设置</h3>
+                    <div class="form-group">
+                        <label for="optimizer-model">优化模型 (LLM-1):</label>
+                        <select id="optimizer-model">
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="glm-4">GLM-4</option>
+                            <option value="claude-3-opus">Claude 3 Opus</option>
+                        </select>
+                        <label for="optimizer-temp">温度:</label>
+                        <input type="range" id="optimizer-temp" min="0" max="1" step="0.1" value="0.7">
+                        <span id="optimizer-temp-value">0.7</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="executor-model">执行模型 (LLM-2):</label>
+                        <select id="executor-model">
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            <option value="glm-3-turbo">GLM-3 Turbo</option>
+                            <option value="claude-3-haiku">Claude 3 Haiku</option>
+                        </select>
+                        <label for="executor-temp">温度:</label>
+                        <input type="range" id="executor-temp" min="0" max="1" step="0.1" value="0.7">
+                        <span id="executor-temp-value">0.7</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="evaluator-model">评估模型 (LLM-3):</label>
+                        <select id="evaluator-model">
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="glm-4">GLM-4</option>
+                            <option value="claude-3-opus">Claude 3 Opus</option>
+                        </select>
+                        <label for="evaluator-temp">温度:</label>
+                        <input type="range" id="evaluator-temp" min="0" max="1" step="0.1" value="0.3">
+                        <span id="evaluator-temp-value">0.3</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="analyzer-model">分析模型 (LLM-4):</label>
+                        <select id="analyzer-model">
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="glm-4">GLM-4</option>
+                            <option value="claude-3-opus">Claude 3 Opus</option>
+                        </select>
+                        <label for="analyzer-temp">温度:</label>
+                        <input type="range" id="analyzer-temp" min="0" max="1" step="0.1" value="0.5">
+                        <span id="analyzer-temp-value">0.5</span>
+                    </div>
+                </div>
+                
+                <div class="task-config">
+                    <h3>任务设置</h3>
+                    <div class="form-group">
+                        <label for="task-description">任务需求描述:</label>
+                        <textarea id="task-description" placeholder="详细描述你的任务需求..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="initial-prompt">初始提示词:</label>
+                        <textarea id="initial-prompt" placeholder="输入初始提示词..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="max-iterations">最大迭代次数:</label>
+                        <input type="number" id="max-iterations" min="1" max="20" value="10">
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="auto-mode" checked>
+                        <label for="auto-mode">自动模式 (无需人工干预)</label>
+                    </div>
+                </div>
+                
+                <button id="start-optimization" class="primary-btn">开始优化</button>
+            </div>
+        </div>
+        
+        <!-- 优化过程视图 -->
+        <div id="optimization-view" class="view" style="display:none;">
+            <div class="optimization-panel">
+                <div class="status-bar">
+                    <div class="iteration-info">
+                        <h3>优化进度: <span id="current-iteration">0</span>/<span id="max-iterations">10</span></h3>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div id="status-message" class="status-message">准备开始优化...</div>
+                </div>
+                
+                <div class="optimization-content">
+                    <div class="left-panel">
+                        <div class="prompt-comparison">
+                            <div class="current-prompt">
+                                <h3>当前最佳提示</h3>
+                                <pre id="current-best-prompt" class="prompt-content"></pre>
+                            </div>
+                            <div class="new-prompt">
+                                <h3>新候选提示</h3>
+                                <pre id="new-candidate-prompt" class="prompt-content"></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-section">
+                            <h3>改进分析</h3>
+                            <div id="prompt-change-analysis" class="analysis-content"></div>
+                        </div>
+                        
+                        <div class="human-feedback" style="display:none;">
+                            <h3>提供反馈</h3>
+                            <div class="feedback-options">
+                                <button class="feedback-btn" data-value="good">👍 好</button>
+                                <button class="feedback-btn" data-value="neutral">👌 中等</button>
+                                <button class="feedback-btn" data-value="bad">👎 差</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="prompt-edit">直接修改提示:</label>
+                                <textarea id="prompt-edit" placeholder="编辑新提示..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="text-feedback">意见反馈:</label>
+                                <textarea id="text-feedback" placeholder="输入你的建议..."></textarea>
+                            </div>
+                            <button id="submit-feedback" class="primary-btn">提交反馈</button>
+                        </div>
+                        
+                        <div class="control-buttons">
+                            <button id="continue-optimization" class="secondary-btn">继续优化</button>
+                            <button id="finish-optimization" class="primary-btn">完成优化</button>
+                        </div>
+                    </div>
+                    
+                    <div class="right-panel">
+                        <div class="samples-section">
+                            <h3>测试样本</h3>
+                            <div id="samples-container" class="samples-container"></div>
+                        </div>
+                        
+                        <div class="output-comparison"></div>
+                        
+                        <div class="history-section">
+                            <h3>优化历史</h3>
+                            <div id="optimization-history" class="history-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 结果视图 -->
+        <div id="results-view" class="view" style="display:none;">
+            <div class="results-panel">
+                <h2>优化结果</h2>
+                
+                <div class="results-summary">
+                    <div class="summary-item">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>总迭代次数: <strong id="iterations-count">0</strong></span>
+                    </div>
+                </div>
+                
+                <div class="final-prompt-section">
+                    <h3>最终优化提示词</h3>
+                    <pre id="final-prompt" class="final-prompt"></pre>
+                    <button id="copy-prompt" class="secondary-btn"><i class="fas fa-copy"></i> 复制提示词</button>
+                </div>
+                
+                <div class="results-history-section">
+                    <h3>优化历史</h3>
+                    <div id="results-history" class="history-container"></div>
+                    <button id="export-history" class="secondary-btn"><i class="fas fa-download"></i> 导出历史</button>
+                </div>
+                
+                <button id="new-optimization" class="primary-btn">开始新的优化</button>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 历史详情模态框 -->
+    <div id="history-details-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>迭代详情</h3>
+            <!-- 内容将由JavaScript动态填充 -->
+        </div>
+    </div>
+    
+    <!-- 加载状态 -->
+    <div id="loading" class="loading-overlay" style="display:none;">
+        <div class="loading-spinner"></div>
+        <div class="loading-message">加载中...</div>
+    </div>
+    
+    <!-- 消息提示 -->
+    <div id="error-message" class="message error-message" style="display:none;"></div>
+    <div id="success-message" class="message success-message" style="display:none;"></div>
+    
+    <!-- 脚本 -->
+    <script src="js/spo-plus.js"></script>
+    <script src="js/ui-controller.js"></script>
+</body>
+</html> 
