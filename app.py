@@ -15,7 +15,7 @@ BACKEND_URL = f"http://localhost:{DEFAULT_PORT}/api"
 
 # 页面配置
 st.set_page_config(
-    page_title="SPO+ 增强型自监督提示优化系统",
+    page_title="增强型自监督提示优化系统",
     page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -630,8 +630,7 @@ def show_results_view():
 def main():
     # 侧边栏
     with st.sidebar:
-        st.image("https://raw.githubusercontent.com/streamlit/streamlit/master/examples/data/logo.jpg", width=100)
-        st.markdown("# SPO+")
+        st.markdown("")
         st.markdown("增强型自监督提示优化系统")
         
         st.markdown("---")
