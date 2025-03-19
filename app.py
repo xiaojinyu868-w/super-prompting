@@ -310,7 +310,7 @@ def run_optimization_step():
 
 # 配置视图
 def show_config_view():
-    st.markdown("<h1 class='main-header'>SPO+ 增强型自监督提示优化系统</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-header'>增强型自监督提示优化系统</h1>", unsafe_allow_html=True)
     
     # 获取可用模型列表
     if not st.session_state.available_models:
@@ -421,7 +421,7 @@ def show_config_view():
 
 # 优化视图
 def show_optimization_view():
-    st.markdown("<h1 class='main-header'>SPO+ 优化过程</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-header'>优化过程</h1>", unsafe_allow_html=True)
     
     # 状态栏
     col1, col2, col3 = st.columns([2, 6, 2])
@@ -532,7 +532,7 @@ def show_optimization_view():
 
 # 结果视图
 def show_results_view():
-    st.markdown("<h1 class='main-header'>SPO+ 优化结果</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-header'>优化结果</h1>", unsafe_allow_html=True)
     
     # 结果摘要
     st.markdown("<h2 class='sub-header'>优化摘要</h2>", unsafe_allow_html=True)
